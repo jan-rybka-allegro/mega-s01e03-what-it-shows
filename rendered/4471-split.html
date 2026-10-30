@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>#4471 · two causes behind date reports · support kb</title>
+<style>
+:root { --bg:#fbfaf7; --fg:#1d1d1b; --muted:#6b6a66; --line:#e3e0d8; --accent:#2f6f5e; --note-bg:#eef5f2; --mono:ui-monospace,Menlo,monospace; }
+@media (prefers-color-scheme:dark) { :root { --bg:#171716; --fg:#ecebe6; --muted:#9c9a93; --line:#34332f; --accent:#6fbfa6; --note-bg:#1d2c27; } }
+body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,sans-serif; }
+.kb { max-width:760px; margin:0 auto; padding:2rem 16px 4rem; }
+.crumb { font:.8rem var(--mono); text-decoration:none; color:var(--muted); }
+h1 { margin:.25rem 0 .5rem; line-height:1.2; }
+.meta { display:flex; flex-wrap:wrap; gap:.5rem 1rem; color:var(--muted); font-size:.85rem; margin:0; }
+.status { border:1px solid var(--line); border-radius:99px; padding:0 .6rem; }
+table { border-collapse:collapse; width:100%; margin:1rem 0; font-size:.92rem; }
+th,td { border-bottom:1px solid var(--line); padding:.35rem .5rem; text-align:left; }
+code { font-family:var(--mono); font-size:.88em; }
+a { color:var(--accent); }
+aside { border-left:4px solid var(--accent); padding:.5rem 1rem; margin:1rem 0; background:var(--note-bg); }
+.note { color:var(--muted); font-size:.9rem; }
+.stamp { margin:2rem 0 0; font:.85rem var(--mono); color:var(--muted); }
+.stamp b { color:var(--accent); letter-spacing:.04em; }
+footer { margin-top:3rem; color:var(--muted); font-size:.8rem; border-top:1px solid var(--line); padding-top:1rem; }
+@media (max-width:600px) { table { display:block; overflow-x:auto; } }
+</style></head><body><div class="kb"><header><a class="crumb" href="/kb">support desk · kb</a>
+<h1>#4471 · two causes behind date reports</h1><p class="meta"><span>owner <b>Jan Rybka</b></span>
+<span class="status">reviewed</span><span>reviewed 2026-10-30</span></p></header>
+<main><p>The 4 October 2026 support export records reports merged into #4471. The existing <a href="/kb/incidents/4471">incident page</a> calls them one month-first parser issue. Tenant locale, booking form, and report channel show two causes. This page records the split against that export; new reports need a fresh count.</p>
+<p><strong>412</strong> unique reports merged into #4471, across
+<strong>2</strong> causes. The export has 427 rows;
+15 repeat an ID and are counted once.</p>
+<table><thead><tr><th>cause</th><th>reports</th><th>tenants</th><th>intake tags</th><th>first → last</th></tr></thead>
+<tbody><tr><td><code>parser</code></td><td>379</td><td>11</td><td>parser ×356 · hint ×23</td><td>2026-04-01 → 2026-10-04</td></tr><tr><td><code>hint</code></td><td>33</td><td>3</td><td>hint ×18 · parser ×15</td><td>2026-04-17 → 2026-09-22</td></tr></tbody></table>
+<p class="note">The desk described 5 reports as a one-day move. They stay in their
+tenant-derived cause group; that description alone does not establish another cause.</p>
+<h2>Problem 1 · shared parser</h2>
+<p>The shared parser reads dates month first. People at day-first tenants enter dates day first, so ambiguous dates can change month and day. This affects reports from the app and email, and reports from the <code>booking-v2</code> form. Example: R-41200 describes 7 April becoming 4 July at Harbour Dental (<code>en-GB</code>, <code>booking-v2</code>). Fix the parser according to the tenant&#39;s locale and test ambiguous dates across the affected channels.</p>
+<h2>Problem 2 · booking-v3 hint</h2>
+<p>The <code>booking-v3</code> form displays <code>MM/DD/YYYY</code> to day-first tenants. People follow that hint, but the form reads the entered date in the tenant&#39;s day-first order. Example: R-41230 describes 6 January becoming 1 June at Copper Studio (<code>es-ES</code>, <code>booking-v3</code>, form channel). Make the hint and form interpretation agree with the tenant&#39;s locale; test the form path separately from the shared parser.</p>
+<aside>The two problems share symptoms and subject lines. The browser&#39;s intake tag is a guess; do not use it or the subject as the cause. Count each report ID once, then use the tenant directory, locale, booking form, and channel to place it.</aside>
+<h2>Triage and follow-up</h2>
+<p>Keep one engineering ticket per cause. Reports in <code>desk-notes.json</code> described as one-day moves remain in the parser group under the existing tenant-based rule. Recheck their individual evidence if a later investigation establishes another cause.</p>
+<p>The <a href="/kb/triage/dedupe">subject-only triage rule</a> and <a href="/kb/decisions/0001-dedupe-by-subject">decision 0001</a> are historical records of why the desk merged these reports. A new decision should replace that rule if the desk adopts cause-based merging; do not edit the accepted decision in place.</p>
+<p class="stamp">desk ref <b>DR-ARFC-DBYV</b></p>
+</main><footer>Pages are written by people. Tables and charts are built from data at render time.</footer>
+</div></body></html>

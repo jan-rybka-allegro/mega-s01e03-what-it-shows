@@ -1,0 +1,55 @@
+---
+layout: runbook
+title: '#4471 · two causes behind date reports'
+owner: Jan Rybka
+status: reviewed
+reviewed: 2026-10-30
+signature: jan-rybka-allegro
+---
+
+<script>
+  import Callout from '#lib/kb/Callout.svelte';
+  import IncidentSplit from '#lib/kb/IncidentSplit.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+The 4 October 2026 support export records reports merged into #4471. The existing
+[incident page](/kb/incidents/4471) calls them one month-first parser issue. Tenant locale,
+booking form, and report channel show two causes. This page records the split against that
+export; new reports need a fresh count.
+
+<IncidentSplit ticket={4471} />
+
+## Problem 1 · shared parser
+
+The shared parser reads dates month first. People at day-first tenants enter dates day first,
+so ambiguous dates can change month and day. This affects reports from the app and email,
+and reports from the `booking-v2` form. Example: R-41200 describes 7 April becoming 4 July
+at Harbour Dental (`en-GB`, `booking-v2`). Fix the parser according to the tenant's locale
+and test ambiguous dates across the affected channels.
+
+## Problem 2 · booking-v3 hint
+
+The `booking-v3` form displays `MM/DD/YYYY` to day-first tenants. People follow that hint,
+but the form reads the entered date in the tenant's day-first order. Example: R-41230
+describes 6 January becoming 1 June at Copper Studio (`es-ES`, `booking-v3`, form channel).
+Make the hint and form interpretation agree with the tenant's locale; test the form path
+separately from the shared parser.
+
+<Callout>
+The two problems share symptoms and subject lines. The browser's intake tag is a guess;
+do not use it or the subject as the cause. Count each report ID once, then use the tenant
+directory, locale, booking form, and channel to place it.
+</Callout>
+
+## Triage and follow-up
+
+Keep one engineering ticket per cause. Reports in `desk-notes.json` described as
+one-day moves remain in the parser group under the existing tenant-based rule. Recheck their
+individual evidence if a later investigation establishes another cause.
+
+The [subject-only triage rule](/kb/triage/dedupe) and [decision 0001](/kb/decisions/0001-dedupe-by-subject)
+are historical records of why the desk merged these reports. A new decision should replace
+that rule if the desk adopts cause-based merging; do not edit the accepted decision in place.
+
+<RenderStamp {signature} />
