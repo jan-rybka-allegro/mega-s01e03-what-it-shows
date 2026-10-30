@@ -22,6 +22,7 @@ const escape = (value) => String(value).replace(/[&<>"']/g, (ch) => ({
 })[ch]);
 
 const inline = (value) => escape(value)
+  .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
   .replace(/`([^`]+)`/g, '<code>$1</code>')
   .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 

@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 · two causes behind date reports'
 owner: Jan Rybka
-status: reviewed
+status: closed
 reviewed: 2026-10-30
 signature: jan-rybka-allegro
 ---
@@ -25,16 +25,23 @@ export; new reports need a fresh count.
 The shared parser reads dates month first. People at day-first tenants enter dates day first,
 so ambiguous dates can change month and day. This affects reports from the app and email,
 and reports from the `booking-v2` form. Example: R-41200 describes 7 April becoming 4 July
-at Harbour Dental (`en-GB`, `booking-v2`). Fix the parser according to the tenant's locale
-and test ambiguous dates across the affected channels.
+at Harbour Dental (`en-GB`, `booking-v2`). A correct parser uses the tenant's locale and
+handles ambiguous dates across the affected channels.
 
 ## Problem 2 · booking-v3 hint
 
 The `booking-v3` form displays `MM/DD/YYYY` to day-first tenants. People follow that hint,
 but the form reads the entered date in the tenant's day-first order. Example: R-41230
 describes 6 January becoming 1 June at Copper Studio (`es-ES`, `booking-v3`, form channel).
-Make the hint and form interpretation agree with the tenant's locale; test the form path
-separately from the shared parser.
+The missing behavior was for the hint and form interpretation to agree with the tenant's
+locale. The form path needed assessment separately from the shared parser.
+
+## Engineering outcome
+
+The desk closed #4471 on 5 October 2026. It marked the parser **fixed** with
+`fix(dates): parse dd/mm for eu locales`. It marked the hint **won't fix** because the
+`booking-v3` form was retired. These outcomes close the two engineering tickets without
+changing how the reports were counted in the export.
 
 <Callout>
 The two problems share symptoms and subject lines. The browser's intake tag is a guess;

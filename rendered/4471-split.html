@@ -22,7 +22,7 @@ footer { margin-top:3rem; color:var(--muted); font-size:.8rem; border-top:1px so
 @media (max-width:600px) { table { display:block; overflow-x:auto; } }
 </style></head><body><div class="kb"><header><a class="crumb" href="/kb">support desk · kb</a>
 <h1>#4471 · two causes behind date reports</h1><p class="meta"><span>owner <b>Jan Rybka</b></span>
-<span class="status">reviewed</span><span>reviewed 2026-10-30</span></p></header>
+<span class="status">closed</span><span>reviewed 2026-10-30</span></p></header>
 <main><p>The 4 October 2026 support export records reports merged into #4471. The existing <a href="/kb/incidents/4471">incident page</a> calls them one month-first parser issue. Tenant locale, booking form, and report channel show two causes. This page records the split against that export; new reports need a fresh count.</p>
 <p><strong>412</strong> unique reports merged into #4471, across
 <strong>2</strong> causes. The export has 427 rows;
@@ -32,9 +32,11 @@ footer { margin-top:3rem; color:var(--muted); font-size:.8rem; border-top:1px so
 <p class="note">The desk described 5 reports as a one-day move. They stay in their
 tenant-derived cause group; that description alone does not establish another cause.</p>
 <h2>Problem 1 · shared parser</h2>
-<p>The shared parser reads dates month first. People at day-first tenants enter dates day first, so ambiguous dates can change month and day. This affects reports from the app and email, and reports from the <code>booking-v2</code> form. Example: R-41200 describes 7 April becoming 4 July at Harbour Dental (<code>en-GB</code>, <code>booking-v2</code>). Fix the parser according to the tenant&#39;s locale and test ambiguous dates across the affected channels.</p>
+<p>The shared parser reads dates month first. People at day-first tenants enter dates day first, so ambiguous dates can change month and day. This affects reports from the app and email, and reports from the <code>booking-v2</code> form. Example: R-41200 describes 7 April becoming 4 July at Harbour Dental (<code>en-GB</code>, <code>booking-v2</code>). A correct parser uses the tenant&#39;s locale and handles ambiguous dates across the affected channels.</p>
 <h2>Problem 2 · booking-v3 hint</h2>
-<p>The <code>booking-v3</code> form displays <code>MM/DD/YYYY</code> to day-first tenants. People follow that hint, but the form reads the entered date in the tenant&#39;s day-first order. Example: R-41230 describes 6 January becoming 1 June at Copper Studio (<code>es-ES</code>, <code>booking-v3</code>, form channel). Make the hint and form interpretation agree with the tenant&#39;s locale; test the form path separately from the shared parser.</p>
+<p>The <code>booking-v3</code> form displays <code>MM/DD/YYYY</code> to day-first tenants. People follow that hint, but the form reads the entered date in the tenant&#39;s day-first order. Example: R-41230 describes 6 January becoming 1 June at Copper Studio (<code>es-ES</code>, <code>booking-v3</code>, form channel). The missing behavior was for the hint and form interpretation to agree with the tenant&#39;s locale. The form path needed assessment separately from the shared parser.</p>
+<h2>Engineering outcome</h2>
+<p>The desk closed #4471 on 5 October 2026. It marked the parser <strong>fixed</strong> with <code>fix(dates): parse dd/mm for eu locales</code>. It marked the hint <strong>won&#39;t fix</strong> because the <code>booking-v3</code> form was retired. These outcomes close the two engineering tickets without changing how the reports were counted in the export.</p>
 <aside>The two problems share symptoms and subject lines. The browser&#39;s intake tag is a guess; do not use it or the subject as the cause. Count each report ID once, then use the tenant directory, locale, booking form, and channel to place it.</aside>
 <h2>Triage and follow-up</h2>
 <p>Keep one engineering ticket per cause: the <a href="https://github.com/jan-rybka-allegro/mega-s01e03-what-it-shows/issues/1">shared-parser ticket</a> and the <a href="https://github.com/jan-rybka-allegro/mega-s01e03-what-it-shows/issues/2">booking-v3 hint ticket</a>. Reports in <code>desk-notes.json</code> described as one-day moves remain in the parser group under the existing tenant-based rule. Recheck their individual evidence if a later investigation establishes another cause.</p>
