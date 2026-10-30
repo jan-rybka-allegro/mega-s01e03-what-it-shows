@@ -42,3 +42,5 @@ the reports merged into #4471 by cause. Its table uses
 [`causes.ts`](src/lib/kb/causes.ts) and the tenant directory at render time.
 The [HTML review copy](rendered/4471-split.html) shows the page with the export's data.
 Regenerate that copy with `node scripts/render-4471.mjs` after changing the source or data.
+The two engineering tickets cover the [shared parser](https://github.com/jan-rybka-allegro/mega-s01e03-what-it-shows/issues/1)
+and the [booking-v3 hint](https://github.com/jan-rybka-allegro/mega-s01e03-what-it-shows/issues/2).

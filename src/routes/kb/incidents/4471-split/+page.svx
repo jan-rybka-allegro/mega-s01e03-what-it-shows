@@ -44,7 +44,9 @@ directory, locale, booking form, and channel to place it.
 
 ## Triage and follow-up
 
-Keep one engineering ticket per cause. Reports in `desk-notes.json` described as
+Keep one engineering ticket per cause: the [shared-parser ticket](https://github.com/jan-rybka-allegro/mega-s01e03-what-it-shows/issues/1)
+and the [booking-v3 hint ticket](https://github.com/jan-rybka-allegro/mega-s01e03-what-it-shows/issues/2).
+Reports in `desk-notes.json` described as
 one-day moves remain in the parser group under the existing tenant-based rule. Recheck their
 individual evidence if a later investigation establishes another cause.
 
